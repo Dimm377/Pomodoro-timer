@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pomodoro-timer & To-Do List</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div id="timer-message">Pilih waktu untuk sesi fokus mu.</div>
+    <div class="main-container">
+      <div class="timer-section">
+        <div class="container">
+          <div class="timer">
+            <h1>Pomodoro Timer  <span id="settings-btn">☰</span></h1>
+            <div class="button-container">
+              <button class="button active" id="pomodoro-session">Work time</button>
+              <button class="button" id="short-break">Short Break</button>
+              <button class="button" id="long-break">Long Break</button>
+            </div>
+
+            <main>
+              <div class="timer-container">
+                <svg class="progress-ring" width="320" height="320">
+                  <circle
+                    class="progress-ring__background"
+                    stroke-width="10"
+                    fill="transparent"
+                    r="150"
+                    cx="160"
+                    cy="160"/>
+                  <circle
+                    id="progress-ring-circle"
+                    class="progress-ring__circle"
+                    stroke-width="10"
+                    fill="transparent"
+                    r="150"
+                    cx="160"
+                    cy="160"/>
+                </svg>
+
+                <div class="timer-display-overlay">
+                  <div
+                    id="pomodoro-timer"
+                    class="timer-display"
+                    data-duration="25"
+                  >
+                    <h1 class="time">25:00</h1>
+                  </div>
+                  <div
+                    id="short-timer"
+                    class="timer-display"
+                    data-duration="5"
+                  >
+                    <h1 class="time">5:00</h1>
+                  </div>
+                  <div
+                    id="long-timer"
+                    class="timer-display"
+                    data-duration="10"
+                  >
+                    <h1 class="time">10:00</h1>
+                  </div>
+                </div>
+              </div>
+            </main>
+
+            <div class="buttons">
+              <button id="start">START</button>
+              <button id="pause" style="display: none;">PAUSE</button>
+              <button id="stop">STOP</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="settings-modal" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Set your time here</h2>
+              <span class="close-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+              <div class="setting">
+                <label for="pomodoro-input">Pomodoro (min)</label>
+                <input type="number" id="pomodoro-input" min="1" value="25">
+              </div>
+              <div class="setting">
+                <label for="short-break-input">Short Break (min)</label>
+                <input type="number" id="short-break-input" min="1" value="5">
+              </div>
+              <div class="setting">
+                <label for="long-break-input">Long Break (min)</label>
+                <input type="number" id="long-break-input" min="1" value="10">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button id="save-settings-btn">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="todo-section">
+        <div class="todo-container">
+          <div class="todo-app">
+            <h2>List your workflow</h2>
+            <div class="row">
+              <input type="text" id="input-task" placeholder="Add your work list here">
+              <button id="add-task-btn">Add</button>
+            </div>
+            <ul id="task-list">
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="script.js"></script>
+  <script src="list.js"></script>
+</html>
