@@ -49,7 +49,7 @@ main {
 
 .progress-ring__background {
     stroke: #2e3252;
-    filter: drop-shadow(0 0 10px #0e1021);
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
 }
 
 .progress-ring__circle {
@@ -58,6 +58,7 @@ main {
     transform: rotate(-90deg);
     transform-origin: 50% 50%;
     transition: stroke-dashoffset 1s linear;
+    filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.4));
 }
 
 .timer-display-overlay {
@@ -309,7 +310,13 @@ input[type="text"] {
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.todo-app button:hover {
+    background: #5a7ee8;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(65, 105, 225, 0.4);
 }
 
 ul li {

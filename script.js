@@ -40,6 +40,11 @@ let timeLeft = 0;
 let totalTime = 0;
 let isPaused = false;
 
+// Make variables available to other scripts
+window.currentTimer = currentTimer;
+window.timeLeft = timeLeft;
+window.totalTime = totalTime;
+window.isPaused = isPaused;
 
 settingsBtn.addEventListener('click', () => {
     settingsModal.style.display = 'block';
@@ -50,7 +55,7 @@ closeBtn.addEventListener('click', () => {
 });
 
 window.addEventListener('click', (event) => {
-    if (event.target == settingsModal) {
+    if (event.target === settingsModal) {
         settingsModal.style.display = 'none';
     }
 });
@@ -102,6 +107,11 @@ function resetCurrentTimer() {
         timeLeft = totalTime;
         updateTimerDisplay();
     }
+
+    // Update the global variables
+    window.currentTimer = currentTimer;
+    window.timeLeft = timeLeft;
+    window.totalTime = totalTime;
 }
 
 function showDefaultTimer() {
@@ -121,9 +131,12 @@ function hideAll() {
 
 session.addEventListener('click', () => {
     if (window.timerInterval) {
-        timermsg.style.display = 'block';
-        timermsg.textContent = 'Please stop the timer before changing session type!';
-        return;
+        if (confirm('Timer is currently running. Do you want to switch to this session? This will stop the current timer.')) {
+            stopTimer();
+            stopAlarm();
+        } else {
+            return;
+        }
     }
     hideAll();
     pomodoro.style.display = 'block';
@@ -138,9 +151,12 @@ session.addEventListener('click', () => {
 
 shortBreak.addEventListener('click', () => {
     if (window.timerInterval) {
-        timermsg.style.display = 'block';
-        timermsg.textContent = 'Please stop the timer before changing session type!';
-        return;
+        if (confirm('Timer is currently running. Do you want to switch to this session? This will stop the current timer.')) {
+            stopTimer();
+            stopAlarm();
+        } else {
+            return;
+        }
     }
     hideAll();
     short.style.display = 'block';
@@ -155,9 +171,12 @@ shortBreak.addEventListener('click', () => {
 
 longBreak.addEventListener('click', () => {
     if (window.timerInterval) {
-        timermsg.style.display = 'block';
-        timermsg.textContent = 'Please stop the timer before changing session type!';
-        return;
+        if (confirm('Timer is currently running. Do you want to switch to this session? This will stop the current timer.')) {
+            stopTimer();
+            stopAlarm();
+        } else {
+            return;
+        }
     }
     hideAll();
     long.style.display = 'block';
@@ -171,6 +190,8 @@ longBreak.addEventListener('click', () => {
 })
 
 function updateTimerDisplay() {
+    if (!currentTimer) return;
+
     const minutes = Math.floor(timeLeft / 60);
     const seconds = Math.floor(timeLeft % 60);
     const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
@@ -180,7 +201,8 @@ function updateTimerDisplay() {
         timeElement.textContent = formattedTime;
     }
 
-    const progressPercent = (timeLeft / totalTime) * 100;
+    // Only calculate progress if totalTime is not zero to prevent division by zero
+    const progressPercent = totalTime > 0 ? (timeLeft / totalTime) * 100 : 0;
     setProgress(progressPercent);
 }
 
@@ -189,16 +211,17 @@ function startTimer() {
         clearInterval(window.timerInterval);
     }
 
-    if (timeLeft === totalTime || isPaused) {
-        const durationValue = parseFloat(currentTimer.getAttribute('data-duration'));
-        if (!isNaN(durationValue) && isFinite(durationValue) && durationValue > 0) {
-            totalTime = durationValue * 60;
-        } else {
-            totalTime = 25 * 60;
-        }
-        if (timeLeft === 0) {
-            timeLeft = totalTime;
-        }
+    // Update totalTime based on current timer's data-duration
+    const durationValue = parseFloat(currentTimer.getAttribute('data-duration'));
+    if (!isNaN(durationValue) && isFinite(durationValue) && durationValue > 0) {
+        totalTime = durationValue * 60;
+    } else {
+        totalTime = 25 * 60;
+    }
+
+    // If timer is finished (timeLeft is 0), reset it to the total time
+    if (timeLeft === 0) {
+        timeLeft = totalTime;
     }
 
     window.timerInterval = setInterval(() => {
@@ -217,6 +240,11 @@ function startTimer() {
     }, 1000);
 
     isPaused = false;
+
+    // Update the global variables
+    window.timeLeft = timeLeft;
+    window.totalTime = totalTime;
+    window.isPaused = isPaused;
 }
 
 function pauseTimer() {
@@ -230,6 +258,9 @@ function pauseTimer() {
         timermsg.textContent = 'Timer paused';
         setTimeout(() => timermsg.style.display = 'none', 2000);
     }
+
+    // Update the global variables
+    window.isPaused = isPaused;
 }
 
 function stopTimer() {
@@ -238,6 +269,9 @@ function stopTimer() {
         window.timerInterval = null;
     }
     isPaused = false;
+
+    // Update the global variables
+    window.isPaused = isPaused;
 }
 
 function playAlarm() {
@@ -290,4 +324,10 @@ stopBtn.addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', function() {
     loadSettings();
     showDefaultTimer();
+
+    // Update the global variables
+    window.currentTimer = currentTimer;
 });
+
+// Make functions available to other scripts
+window.resetCurrentTimer = resetCurrentTimer;
