@@ -219,13 +219,28 @@ h1 {
 
 .modal-body .setting {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     margin-bottom: 15px;
 }
 
 .modal-body label {
     font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.help-text {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-top: 5px;
+    display: block;
+}
+
+.audio-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
 }
 
 .modal-body input {

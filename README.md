@@ -1,25 +1,22 @@
 # Pomodoro Timer
 
-This is a general pomodoro application, nothing special because it is for learning.
+A simple Pomodoro timer with to-do list and custom audio alerts.
 
 ## Features
+- Pomodoro, short break, and long break timers
+- To-do list with time estimation
+- Customizable timer durations
+- Custom audio selection for alarms
+- Responsive design
 
-- Timer for Pomodoro (25 minutes), short break (5 minutes), and long break (10 minutes)
-- Customizable duration settings
-- Attractive interface with progress ring indicator
-- With special audio include (maybe only Indonesian people understand this audio haha)
+## Installation
+1. Make sure Node.js is installed
+2. Run `npm install`
+3. Start the server with `node server.js` or `npm start`
+4. Visit `http://localhost:8080` in your browser
 
-## How to Use 
-(Yeah, you actually already know it)
-
-1. Select session: Pomodoro, Short Break, or Long Break
-2. Click START to begin the timer
-3. Use PAUSE to pause and STOP to end the session
-
-## Files
-
-- `index.html` - Main interface
-- `style.css` - Design and styling
-- `script.js` - Timer functionality
-- `music/` - Audio files
-
+## Usage
+- Use the settings icon (☰) to adjust timer durations and audio
+- Add tasks to the to-do list and estimate their duration
+- Click completed tasks to automatically adjust the Pomodoro timer
+- Add your own .mp3 files to the `/music/` folder to use as alarms

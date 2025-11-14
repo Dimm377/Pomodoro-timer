@@ -18,6 +18,8 @@ const saveSettingsBtn = document.getElementById('save-settings-btn');
 const pomodoroInput = document.getElementById('pomodoro-input');
 const shortBreakInput = document.getElementById('short-break-input');
 const longBreakInput = document.getElementById('long-break-input');
+const audioSelect = document.getElementById('audio-select');
+const refreshAudioBtn = document.getElementById('refresh-audio-btn');
 
 const progressRing = document.getElementById('progress-ring-circle');
 const radius = progressRing.r.baseVal.value;
@@ -26,8 +28,10 @@ const circumference = radius * 2 * Math.PI;
 progressRing.style.strokeDasharray = `${circumference} ${circumference}`;
 progressRing.style.strokeDashoffset = circumference;
 
-const alarm = new Audio('./music/Bapak Mulyono Raja Tipu Tipu.. (Lyrics Video).mp3');
+let alarm = new Audio('./music/Bapak Mulyono Raja Tipu Tipu.. (Lyrics Video).mp3');
 alarm.loop = true;
+
+let audioFiles = [];
 
 function setProgress(percent) {
   const offset = circumference - (percent / 100) * circumference;
@@ -40,7 +44,6 @@ let timeLeft = 0;
 let totalTime = 0;
 let isPaused = false;
 
-// Make variables available to other scripts
 window.currentTimer = currentTimer;
 window.timeLeft = timeLeft;
 window.totalTime = totalTime;
@@ -69,6 +72,13 @@ function saveSettings() {
     short.setAttribute('data-duration', shortBreakValue);
     long.setAttribute('data-duration', longBreakValue);
 
+    const selectedAudio = audioSelect.value;
+    if (selectedAudio) {
+        alarm.pause();
+        alarm = new Audio(selectedAudio);
+        alarm.loop = true;
+    }
+
     stopTimer();
     resetCurrentTimer();
 
@@ -90,9 +100,57 @@ function loadSettings() {
     pomodoro.setAttribute('data-duration', defaultPomodoro);
     short.setAttribute('data-duration', defaultShortBreak);
     long.setAttribute('data-duration', defaultLongBreak);
+
+    loadAudioOptions();
+}
+
+function loadAudioOptions() {
+    loadAudioFilesFromServer();
 }
 
 saveSettingsBtn.addEventListener('click', saveSettings);
+
+refreshAudioBtn.addEventListener('click', function() {
+    loadAudioFilesFromServer();
+});
+
+function loadAudioFilesFromServer() {
+    fetch('/api/get-audio-files')
+        .then(response => response.json())
+        .then(data => {
+            audioSelect.innerHTML = '';
+
+            data.forEach(file => {
+                const option = document.createElement('option');
+                option.value = file.path;
+                option.textContent = file.name;
+
+                if (alarm && alarm.src.includes(file.name)) {
+                    option.selected = true;
+                }
+                audioSelect.appendChild(option);
+            });
+
+            if (data.length === 0) {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'No audio files found in /music folder';
+                option.disabled = true;
+                audioSelect.appendChild(option);
+            }
+
+            // Tampilkan pesan sukses
+            timermsg.textContent = `Found ${data.length} audio file(s)`;
+            timermsg.style.display = 'block';
+            setTimeout(() => timermsg.style.display = 'none', 2000);
+        })
+        .catch(error => {
+            console.error('Error loading audio files:', error);
+            timermsg.textContent = 'Error loading audio files';
+            timermsg.style.display = 'block';
+            setTimeout(() => timermsg.style.display = 'none', 2000);
+        });
+}
 
 
 
@@ -108,7 +166,6 @@ function resetCurrentTimer() {
         updateTimerDisplay();
     }
 
-    // Update the global variables
     window.currentTimer = currentTimer;
     window.timeLeft = timeLeft;
     window.totalTime = totalTime;
@@ -201,7 +258,6 @@ function updateTimerDisplay() {
         timeElement.textContent = formattedTime;
     }
 
-    // Only calculate progress if totalTime is not zero to prevent division by zero
     const progressPercent = totalTime > 0 ? (timeLeft / totalTime) * 100 : 0;
     setProgress(progressPercent);
 }
@@ -211,7 +267,6 @@ function startTimer() {
         clearInterval(window.timerInterval);
     }
 
-    // Update totalTime based on current timer's data-duration
     const durationValue = parseFloat(currentTimer.getAttribute('data-duration'));
     if (!isNaN(durationValue) && isFinite(durationValue) && durationValue > 0) {
         totalTime = durationValue * 60;
@@ -219,7 +274,6 @@ function startTimer() {
         totalTime = 25 * 60;
     }
 
-    // If timer is finished (timeLeft is 0), reset it to the total time
     if (timeLeft === 0) {
         timeLeft = totalTime;
     }
@@ -241,7 +295,6 @@ function startTimer() {
 
     isPaused = false;
 
-    // Update the global variables
     window.timeLeft = timeLeft;
     window.totalTime = totalTime;
     window.isPaused = isPaused;
@@ -259,7 +312,6 @@ function pauseTimer() {
         setTimeout(() => timermsg.style.display = 'none', 2000);
     }
 
-    // Update the global variables
     window.isPaused = isPaused;
 }
 
@@ -270,17 +322,21 @@ function stopTimer() {
     }
     isPaused = false;
 
-    // Update the global variables
     window.isPaused = isPaused;
 }
 
 function playAlarm() {
-    alarm.play().catch(e => console.log("Audio play failed:", e));
+    if (alarm) {
+        alarm.currentTime = 0;
+        alarm.play().catch(e => console.log("Audio play failed:", e));
+    }
 }
 
 function stopAlarm() {
-    alarm.pause();
-    alarm.currentTime = 0;
+    if (alarm) {
+        alarm.pause();
+        alarm.currentTime = 0;
+    }
 }
 
 
@@ -325,9 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadSettings();
     showDefaultTimer();
 
-    // Update the global variables
     window.currentTimer = currentTimer;
 });
 
-// Make functions available to other scripts
 window.resetCurrentTimer = resetCurrentTimer;

@@ -93,6 +93,16 @@
                 <label for="long-break-input">Long Break (min)</label>
                 <input type="number" id="long-break-input" min="1" value="10">
               </div>
+              <div class="setting">
+                <label for="audio-select">Alarm Sound</label>
+                <div class="audio-controls">
+                  <select id="audio-select">
+                    <option value="./music/Bapak Mulyono Raja Tipu Tipu.. (Lyrics Video).mp3">Default Alarm</option>
+                  </select>
+                  <button id="refresh-audio-btn" type="button">Refresh</button>
+                </div>
+                <small class="help-text">Tambahkan file .mp3 ke folder /music untuk menampilkannya di sini</small>
+              </div>
             </div>
             <div class="modal-footer">
               <button id="save-settings-btn">Save</button>

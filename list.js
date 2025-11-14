@@ -45,7 +45,6 @@ function setPomodoroTime(duration) {
     if (pomodoroInput) {
         pomodoroInput.value = parseInt(duration);
 
-        // Update the timer display directly
         updatePomodoroDisplay(duration);
     }
 }
@@ -54,10 +53,8 @@ function updatePomodoroDisplay(duration) {
     const pomodoroTimer = document.getElementById('pomodoro-timer');
 
     if (pomodoroTimer) {
-        // Update the data-duration attribute
         pomodoroTimer.setAttribute('data-duration', duration);
 
-        // Update the display time
         const timeElement = pomodoroTimer.querySelector('.time');
         if (timeElement) {
             const minutes = parseInt(duration);
@@ -65,24 +62,19 @@ function updatePomodoroDisplay(duration) {
             timeElement.textContent = formattedTime;
         }
 
-        // Only change the displayed timer if no timer is currently running
         if (!window.timerInterval) {
-            // Show the pomodoro timer and hide others
             document.querySelectorAll('.timer-display').forEach(timer => {
                 timer.style.display = 'none';
             });
 
             pomodoroTimer.style.display = 'block';
 
-            // Update active session button
             document.getElementById('pomodoro-session')?.classList.add('active');
             document.getElementById('short-break')?.classList.remove('active');
             document.getElementById('long-break')?.classList.remove('active');
 
-            // Update currentTimer reference in script.js
             if (typeof window.currentTimer !== 'undefined') {
                 window.currentTimer = pomodoroTimer;
-                // Reset the actual timer values
                 if (typeof window.resetCurrentTimer === 'function') {
                     window.resetCurrentTimer();
                 }
@@ -103,16 +95,14 @@ function addTask() {
     else {
         let duration = prompt('Berapa menit waktu yang dibutuhkan untuk tugas ini?', '');
 
-        if (duration !== null) { // User didn't cancel the prompt
+        if (duration !== null) {
             let li = document.createElement('li');
 
             if (duration && !isNaN(duration) && isFinite(duration) && duration > 0) {
-                // Only add duration if it's valid
                 const originalText = inputTask.value.replace(/\s*\(\d+\s*min\)\s*$/, '').trim();
                 li.textContent = originalText + ` (${duration} min)`;
                 li.setAttribute('data-duration', duration);
             } else {
-                // If duration is not valid, just use the task text without duration
                 li.textContent = inputTask.value;
             }
 
